@@ -20,7 +20,8 @@
   "homepage": "https://github.com/Mnabawy/souq#readme",
   "dependencies": {
     "express": "^4.17.1",
-    "mongoose": "^5.10.9"
+    "mongoose": "^5.10.9",
+    "passport": "^0.4.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.6"
