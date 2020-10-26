@@ -62,6 +62,7 @@ mongoose.set('debug', true);
 
 // models & routes
 require('./src/models/user');
+require('./src/config/passport');
 
 const port = 3000
 
