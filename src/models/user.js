@@ -5,45 +5,40 @@ const jwt = require('jsonwebtoken');
 const { Schema } = mongoose;
 
 const UserSchema = new Schema({
-    firstName: String,
-    lastName: String,
     email: String,
-    password: String,
-    consfirmPassword: String
+    hash: String,
+    salt: String
 });
 
-UserSchema.methods.setPassword = function (inputPassword) {
-    this.password = crypto.randomBytes(16).toString('hex');
-    this.consfirmPassword = crypto.pbkdf2Sync(password, this.inputPassword, 1000, 512, 'sha512').toString('hex');
+UserSchema.methods.setPassword = function (password) {
+    this.salt = crypto.randomBytes(16).toString('hex');
+    this.hash = crypto.pbkdf2Sync(password, this.salt, 1000, 512, 'sha512').toString('hex');
 }
 
 
-UserSchema.methods.validatePassword = function (inputPassword) {
-    const password = crypto.pbkdf2Sync(password, this.consfirmPassword, 1000, 512, 'sha512').toString('hex');
-    return this.consfirmPassword === password;
+UserSchema.methods.validatePassword = function (password) {
+    const hash = crypto.pbkdf2Sync(password, this.salt, 1000, 512, 'sha512').toString('hex');
+    return this.hash === hash;
 }
 
-UserSchema.methods.generatJWT = function(){
+UserSchema.methods.generatJWT = function () {
     const today = new Date();
     const expirationDate = new Date(today);
     expirationDate.setDate(today.getDate() + 60);
 
     return jwt.sign({
-        email:this.email,
-        id:this._id,
-        exp:parseInt(expirationDate.getTime() / 1000, 10),
+        email: this.email,
+        id: this._id,
+        exp: parseInt(expirationDate.getTime() / 1000, 10),
+    }, 'secret');
+}
 
-    },'secret');
-} 
-
-UserSchema.methods.toAuthJSON = function() {
+UserSchema.methods.toAuthJSON = function () {
     return {
         _id: this._id,
-        password: this.password,
-        consfirmPassword:this.consfirmPassword
+        email: this.email,
+        token: this.generatJWT()
     }
 }
 
-const User = mongoose.model('User', UserSchema);
-
-module.exports = User;
+mongoose.model('Users', UserSchema);
