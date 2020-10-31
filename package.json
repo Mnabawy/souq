@@ -27,7 +27,8 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.10.9",
     "morgan": "^1.10.0",
-    "passport": "^0.4.1"
+    "passport": "^0.4.1",
+    "passport-local": "^1.0.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.6"
